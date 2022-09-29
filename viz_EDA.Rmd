@@ -76,6 +76,44 @@ weather_df %>%
 ```
 
 
+Make points transparent
+```{r}
+weather_df %>%
+  drop_na()%>%
+  ggplot(aes(x=tmin, y = tmax,color=name))+geom_point(alpha=.3)+geom_smooth()
+```
+
+Make seperate panels
+```{r}
+weather_df %>%
+  drop_na()%>%
+  ggplot(aes(x=tmin, y = tmax,color=name))+
+  geom_point(alpha=.3)+
+  geom_smooth(se=FALSE)+
+  facet_grid(.~name)
+#or by row using: facet_grid(name~.)
+```
+
+tmax and tmin is boring. Consider other things:
+
+```{r}
+weather_df %>%
+  ggplot(aes(x=date, y = tmax, color = name))+
+  geom_point(aes(size=prcp),alpha=.3)+
+  geom_smooth(se=FALSE)+
+  facet_grid(.~name)
+  #+theme(axis.test.x = element_text(angle =90,vjust=0.5,hjust=1))
+```
+Some quick stuff
+```{r}
+
+weather_df %>%
+  ggplot(aes(x= tmax,y = tmin))+
+  geom_hex()
+```
+
+
+
 
 
 
