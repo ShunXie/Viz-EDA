@@ -163,7 +163,13 @@ weather_scatterplot=
   facet_grid(.~name)
 weather_scatterplot
 
-ggsave("results/weather_scaterplot.pdf",weather_scatterplot)
+ggsave("results/weather_scaterplot.pdf",weather_scatterplot,width=8, height=5)
 
 ```
+
+
+```{r,fig.width=8}
+wather_scatterplot 
+```
+
 
