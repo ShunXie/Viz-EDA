@@ -59,3 +59,62 @@ weather_df =
     ## date created (size, mb): 2022-09-29 10:33:07 (0.952)
 
     ## file min/max dates: 1999-09-01 / 2022-09-30
+
+# Plottings:
+
+but better this time:
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color= name))+
+  geom_point(alpha=.5)+
+  labs(
+    x="Minimum Daily Temp (C)",
+    y="Maximum Daily Temp (C)",
+    title = "Scatterplot of daily temp extremes",
+    caption = "Data come from the rnoaa package"
+  )+
+  scale_x_continuous(
+    breaks=c(10,0,15),
+    labels=c("-10C","0","15")
+  )+
+  scale_y_continuous(
+    trans="sqrt"  
+    )
+```
+
+    ## Warning in self$trans$transform(x): NaNs produced
+
+    ## Warning: Transformation introduced infinite values in continuous y-axis
+
+    ## Warning: Removed 90 rows containing missing values (geom_point).
+
+![](viz_EDA_2_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+Change the color of the plotting
+
+``` r
+weather_df %>%
+  ggplot(aes(x=tmin, y=tmax, color= name))+
+  geom_point(alpha=.5)+
+  labs(
+    x="Minimum Daily Temp (C)",
+    y="Maximum Daily Temp (C)",
+    title = "Scatterplot of daily temp extremes",
+    caption = "Data come from the rnoaa package"
+  )+
+  viridis::scale_color_viridis(
+    name = 'location',
+    discrete = TRUE
+  )
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](viz_EDA_2_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+#scale_color_hue(
+   # name='location',
+    #h=c(100,300)
+```
