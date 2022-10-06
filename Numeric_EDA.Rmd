@@ -36,6 +36,185 @@ weather_df =
 ```
 
 
+## Group by 
+
+```{r}
+weather_df %>% 
+  group_by(name,month)
+```
+
+
+## summarize()
+Let's group and then summarize
+
+```{r}
+weather_df %>% 
+  group_by(name, month)%>%
+  summarize(
+    # how many number exist in each group (number of observation in each group)
+    n_obs=n()
+  )
+
+```
+
+
+Can also count names:
+
+```{r}
+weather_df %>% 
+  count(name, month)
+
+```
+
+
+U
+```{r}
+weather_df %>% 
+  pull(month) %>% 
+  table()
+```
+
+```{r}
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(
+    n_obs=n(),
+    # number of distinct values for month
+    n_dist = n_distinct(month)
+  )
+```
+
+
+## Brief aside on 2x2 tables:
+
+```{r}
+weather_df %>% 
+  mutate(
+    cold = case_when(
+      tmax <  5 ~ "cold",
+      tmax >= 5 ~ "not_cold",
+      TRUE      ~ ""
+  )) %>% 
+  filter(name != "Waikiki_HA") %>% 
+  group_by(name, cold) %>% 
+  summarize(
+    count = n()) 
+  #pivot_wider(
+   # name_from = cold,
+   # values_from = n_obs
+  #)
+  
+```
+
+```{r}
+
+weather_df %>% 
+  mutate(cold = case_when(
+    tmax <  5 ~ "cold",
+    tmax >= 5 ~ "not_cold",
+    TRUE     ~ ""
+  )) %>% 
+  filter(name != "Waikiki_HA") %>% 
+  janitor::tabyl(name, cold)
+```
+
+
+```{r}
+
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tmax=mean(tmax, na.rm = TRUE),
+    sd_prcp = sd(prcp),
+    median_tmax = median(tmax, na.rm = TRUE)
+  )
+
+```
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(across(prcp:tmin,mean))
+```
+
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(
+    mean_tmax = mean(tmax, na.rm=TRUE)
+  ) %>% 
+  ggplot(aes(x=month,y=mean_tmax, color = name))+
+  geom_point()+geom_path()
+```
+
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(
+    mean_tmax = mean(tmax, na.rm=TRUE)
+  ) %>% 
+  pivot_wider(
+    names_from = name,
+    values_from = mean_tmax
+  ) 
+#knitr::kable(dig=2)
+
+```
+
+
+## Group mutates
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(mean_tmax=mean(tmax),centered_tmax = tmax-mean_tmax) %>% 
+  ggplot(aes(x=date, y=centered_tmax,color= name))+
+  geom_point()
+```
+
+lagged observations
+
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(yesterday_tmax = lag(tmax))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(yesterday_tmax=lag(tmax),
+         tmax_change=tmax-yesterday_tmax) %>% 
+  summarize(sd_tmax_change = sd(tmax_change,na.rm=TRUE))
+
+```
+
+One other window function ...
+```{r}
+weather_df %>% 
+  group_by(name,month) %>% 
+  mutate(
+    tmax_rank=min_rank(tmax)
+  ) %>% 
+  filter(tmax_rank<4) %>% 
+  arrange(name,month,tmax_rank)
+```
+
+
 
 
 
